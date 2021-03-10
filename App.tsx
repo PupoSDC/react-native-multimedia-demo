@@ -1,22 +1,26 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { FunctionComponent } from 'react';
+import { AudioPlayerScreen } from './screens/AudioPlayer';
+import { VideoPlayerScreen } from './screens/VideoPlayer';
+import { HomeScreen } from "./screens/Home";
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  Home: undefined;
+  Video:  undefined;
+  Audio: undefined;
+};
 
-const App = () => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
+const RootStack = createStackNavigator<RootStackParamList>();
 
-const App2 = () => {
+const App : FunctionComponent = () => {
   return (
     <NavigationContainer>
-      <Stack.Screen name="Home" component={App} />
+      <RootStack.Navigator initialRouteName="Home">
+        <RootStack.Screen name="Home" component={HomeScreen} />
+        <RootStack.Screen name="Video" component={VideoPlayerScreen} />
+        <RootStack.Screen name="Audio" component={AudioPlayerScreen} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 };
