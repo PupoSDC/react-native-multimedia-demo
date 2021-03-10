@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 const Stack = createStackNavigator();
 
-const HomeScreen = () => {
+const App = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
@@ -13,10 +13,10 @@ const HomeScreen = () => {
   );
 }
 
-const App = () => {
+const App2 = () => {
   return (
     <NavigationContainer>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={App} />
     </NavigationContainer>
   );
 };
