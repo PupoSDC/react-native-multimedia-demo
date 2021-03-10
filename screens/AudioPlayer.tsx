@@ -14,7 +14,7 @@ export const AudioPlayerScreen = () => {
         setupControls({
             title: "im an audiooooo",
             currentTime: 0,
-            duration: 150,
+            duration: 251,
             onPlay: () => setIsPlaying(true),
             onPause: () => setIsPlaying(false),
         });
@@ -22,9 +22,14 @@ export const AudioPlayerScreen = () => {
     }, []);
 
     useEffect(() => {
+        if (isPlaying) {
+            playerRef.current?.play();
+        } else {
+            playerRef.current?.pause();
+        }
         updateState({
-          isPlaying: isPlaying,
-          currentTime: 3,
+          isPlaying,
+          currentTime: playerRef.current?.currentTime ?? 0,
         })
       }, [isPlaying]);
 
@@ -33,16 +38,7 @@ export const AudioPlayerScreen = () => {
             <Text>Home Screen</Text>
             <Button
                 title={isPlaying ? "stop" : "play"}
-                onPress={() => setIsPlaying((isPlaying) => {
-                    if (isPlaying) {
-                        console.log("stop")
-                        playerRef.current?.pause();
-                    } else {
-                        console.log("start")
-                        playerRef.current?.play();
-                    }
-                    return !isPlaying;
-                })}
+                onPress={() => setIsPlaying((isPlaying) => !isPlaying)}
             />
         </View>
     )
