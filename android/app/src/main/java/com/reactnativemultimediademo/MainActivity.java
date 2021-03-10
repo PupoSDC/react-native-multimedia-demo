@@ -1,4 +1,4 @@
-package com.reactnativemultimediademo;
+package com.ReactNativeMultimediaDemo;
 
 import com.facebook.react.ReactActivity;
 
