@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import MusicControl, { Command } from 'react-native-music-control'
 import Video, { OnProgressData } from 'react-native-video';
@@ -12,34 +13,46 @@ export const VideoPlayerScreen = () => {
   const [paused, setPaused] = useState(true);
   const [areControlsSetup, setAreControlsSetup] = useState(false);
 
-  useEffect(() => {
-    MusicControl.enableBackgroundMode(true);
-    MusicControl.enableControl(Command.closeNotification, true, { when: 'always' });
-    MusicControl.on(Command.play, () => setPaused(false));
-    MusicControl.on(Command.pause, () => setPaused(true));
-    return () => {
-      console.log("stop control");
-      MusicControl.stopControl();
-    }
-  }, [setPaused]);
-
-  const setupControls = (data: OnProgressData)  => {
+  const setupControls = (data: OnProgressData) => {
     if (!areControlsSetup) {
-      MusicControl.setNowPlaying({
-        title: "demo video",
-        artist: "Pedrito el Pupito",
-        duration: data.playableDuration, 
-        elapsedTime: data.currentTime,
-        artwork: require("../media/demoVideoArtwork.jpg"),
-      });    
+      setAreControlsSetup(true);
+      // fake start, necessary so we can stop the plugin safely
+      MusicControl.enableBackgroundMode(true);
+      MusicControl.handleAudioInterruptions(true);
       MusicControl.enableControl(Command.play, true);
-      MusicControl.enableControl(Command.pause, true);
-      console.log("playing!!", data.playableDuration);   
-    } 
+      MusicControl.setNowPlaying({});
+      MusicControl.updatePlayback(data); // you also need this or it wont work...
+
+      setTimeout(() => {
+        // The plugin doesn't work until we stop it at least once...
+        // so we do it here.
+        MusicControl.stopControl();
+      }, 50);
+
+      setTimeout(() => {
+        // Real start.
+        MusicControl.handleAudioInterruptions(true);
+        MusicControl.enableBackgroundMode(true);
+        MusicControl.enableControl(Command.play, true);
+        MusicControl.enableControl(Command.pause, true);
+        MusicControl.on(Command.play, () => setPaused(false));
+        MusicControl.on(Command.pause, () => setPaused(true));
+        MusicControl.setNowPlaying(data);
+      }, 100);
+    }
   }
+
+  useEffect(() => () => {
+    MusicControl.updatePlayback({
+      state: MusicControl.STATE_STOPPED,
+      elapsedTime: 0,
+    });
+    MusicControl.stopControl();
+  });
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.fullScreen} onPress={() => setPaused(paused => !paused)}>
         <Video
           source={require("../media/demoVideo.mp4")}
           paused={paused}
@@ -49,10 +62,11 @@ export const VideoPlayerScreen = () => {
           playWhenInactive={true}
           ignoreSilentSwitch={'ignore'}
           onProgress={setupControls}
-          controls={true}
+          //controls={false}
           // @ts-ignore Required for compatibility with native controls
           mixWithOthers="mix"
         />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -15,6 +15,17 @@ const setup = async () => {
         artist: 'Pupito El Pedrito',
         artwork: require('../media/demoAudioArtwork.jpeg')
     });
+
+    await TrackPlayer.updateOptions({
+        capabilities: [
+          TrackPlayer.CAPABILITY_PLAY,
+          TrackPlayer.CAPABILITY_PAUSE,
+        ],
+        compactCapabilities: [
+          TrackPlayer.CAPABILITY_PLAY,
+          TrackPlayer.CAPABILITY_PAUSE
+        ]
+    });
 };
 
 const destroy = async () => {
