@@ -49,9 +49,6 @@ export const VideoPlayerScreen = () => {
           playWhenInactive={true}
           ignoreSilentSwitch={'ignore'}
           onProgress={onProgress}
-          //controls={false}
-          // @ts-ignore Required for compatibility with native controls
-          mixWithOthers="mix"
         />
       </TouchableOpacity>
     </View>
