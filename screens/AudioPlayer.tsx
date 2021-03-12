@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, View } from 'react-native';
-import { Text } from 'react-native';
-import { Player, Recorder, MediaStates } from '@react-native-community/audio-toolkit';
+import { Button, View, Text } from 'react-native';
+import { default as SoundPlayer } from 'react-native-sound-player'
 import { useNativeControls } from '../hooks/useNativeControls';
 
+
+
 export const AudioPlayerScreen = () => {
-    const playerRef = useRef<Player>();
     const [isPlaying, setIsPlaying] = useState(false);
     const { setupControls, updateState, isSetup } = useNativeControls();
     
     useEffect(() => {
-        playerRef.current = new Player("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+        SoundPlayer.loadUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
+
         setupControls({
             title: "im an audiooooo",
             currentTime: 0,
@@ -18,14 +19,14 @@ export const AudioPlayerScreen = () => {
             onPlay: () => setIsPlaying(true),
             onPause: () => setIsPlaying(false),
         });
-        return () => playerRef.current?.destroy();
+        return () => SoundPlayer.stop();
     }, []);
 
     useEffect(() => {
         if (isPlaying) {
-            playerRef.current?.play();
+            SoundPlayer.play();
         } else {
-            playerRef.current?.pause();
+            SoundPlayer.pause();
         }
         updateState({
           isPlaying,
